@@ -35,6 +35,7 @@ class PortalAccount(portal.PortalAccount, PaymentPortal):
                 'amount_residual': discounted_amount,
                 'landing_route': invoice.get_portal_url(),
                 'transaction_route': f'/invoice/transaction/{invoice.id}',
+                'next_amount_to_pay': values.get('next_amount_to_pay'),
             },
             access_token=access_token,
             **kwargs)
@@ -103,6 +104,7 @@ class PortalAccount(portal.PortalAccount, PaymentPortal):
                 'payment_reference': batch_name,
                 'landing_route': '/my/invoices/',
                 'transaction_route': '/invoice/transaction/overdue',
+                'next_amount_to_pay': total_amount,
             },
             **kwargs)
         values |= common_view_values
@@ -117,11 +119,12 @@ class PortalAccount(portal.PortalAccount, PaymentPortal):
         invoice_company = invoices_data['company'] or request.env.company
 
         availability_report = {}
+        use_next_amount_to_pay = invoices_data['total_amount'] != invoices_data['next_amount_to_pay']
         # Select all the payment methods and tokens that match the payment context.
         providers_sudo = request.env['payment.provider'].sudo()._get_compatible_providers(
             invoice_company.id,
             partner_sudo.id,
-            invoices_data['total_amount'],
+            invoices_data['total_amount'] if not use_next_amount_to_pay else invoices_data['next_amount_to_pay'],
             currency_id=invoices_data['currency'].id,
             report=availability_report,
             **kwargs,
@@ -144,6 +147,7 @@ class PortalAccount(portal.PortalAccount, PaymentPortal):
         portal_page_values = {
             'company_mismatch': company_mismatch,
             'expected_company': invoice_company,
+            'use_next_amount_to_pay': use_next_amount_to_pay
         }
         payment_form_values = {
             'show_tokenize_input_mapping': PaymentPortal._compute_show_tokenize_input_mapping(

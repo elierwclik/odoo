@@ -62,6 +62,14 @@ class PaymentPortal(payment_portal.PaymentPortal):
             'partner_id': partner_id,
             'reference_prefix': payment_reference,
         })  # Inject the create values taken from the invoice into the kwargs.
+
+        amount_residual = sum(self.env['account.move'].browse(invoice_ids).mapped('amount_residual'))
+
+        amount = kwargs.get('amount')
+        if amount is not None and amount > amount_residual:
+            raise ValidationError(_("Please reload the page or contact the administration, the payment amount is "
+                                    "not valid for the selected invoices."))
+
         tx_sudo = self._create_transaction(
             custom_create_values={
                 'invoice_ids': [Command.set(invoice_ids)],
