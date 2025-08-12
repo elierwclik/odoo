@@ -142,33 +142,32 @@
                             <div t-if="company_mismatch">
                                 <t t-call="payment.company_mismatch_warning"/>
                             </div>
-                                <t t-set="amount" t-value="amount_due if not use_next_amount_to_pay else next_amount_to_pay"/>
-                                <div t-if="show_epd" class="alert alert-success">
+                            <t t-set="amount" t-value="amount_due if not use_next_amount_to_pay else next_amount_to_pay"/>
+                            <div t-if="show_epd" class="alert alert-success">
                                     Early Payment Discount of <span t-out="epd_discount_amount_currency" t-options="{'widget': 'monetary', 'display_currency': currency}"/> has been applied.
                                 </div>
-                                <div t-if="payment_state == 'in_payment'" class="alert alert-danger">
+                            <div t-if="payment_state == 'in_payment'" class="alert alert-danger">
                                     A payment has already been made on this invoice, please make sure to not pay twice.
                                 </div>
-                                <div class="text-bg-light row row-cols-1 row-cols-md-2 mx-0 mb-3 py-2 rounded">
-                                    <t t-call="payment.summary_item">
-                                        <t t-set="name" t-value="'amount_full' if not use_next_amount_to_pay else 'amount_installment'"/>
-                                        <t t-set="label">Amount</t>
-                                        <t t-set="value" t-value="amount"/>
-                                        <t t-set="options"
-                                            t-value="{'widget': 'monetary', 'display_currency': currency}"
-                                        />
-                                    </t>
-                                    <t t-call="payment.summary_item">
-                                        <t t-set="name" t-value="'reference_full' if not use_next_amount_to_pay else 'reference_installment'"/>
-                                        <t t-set="label">Reference</t>
-                                        <t t-set="value" t-value="next_payment_reference"/>
-                                        <t t-set="include_separator" t-value="True"/>
-                                    </t>
-                                </div>
-                                <t t-call="account_payment.form">
-                                    <t t-set="amount" t-value="amount"/>
+                            <div class="text-bg-light row row-cols-1 row-cols-md-2 mx-0 mb-3 py-2 rounded">
+                                <t t-call="payment.summary_item">
+                                    <t t-set="name" t-value="'amount_full' if not use_next_amount_to_pay else 'amount_installment'"/>
+                                    <t t-set="label">Amount</t>
+                                    <t t-set="value" t-value="amount"/>
+                                    <t t-set="options"
+                                       t-value="{'widget': 'monetary', 'display_currency': currency}"
+                                    />
                                 </t>
-
+                                <t t-call="payment.summary_item">
+                                    <t t-set="name" t-value="'reference_full' if not use_next_amount_to_pay else 'reference_installment'"/>
+                                    <t t-set="label">Reference</t>
+                                    <t t-set="value" t-value="next_payment_reference"/>
+                                    <t t-set="include_separator" t-value="True"/>
+                                </t>
+                            </div>
+                            <t t-call="account_payment.form">
+                                <t t-set="amount" t-value="amount"/>
+                            </t>
                         </div>
                     </div>
                 </div>
