@@ -363,10 +363,12 @@ export class DescriptionScreen extends Component {
      * @param {FocusEvent} ev
      */
     onDropdownFocusout(ev) {
+        const dropdown = ev.currentTarget;
         const delay = isBrowserSafari() ? 100 : 0;
+
         setTimeout(() => {
-            if (ev.relatedTarget?.closest(".dropdown") !== ev.currentTarget) {
-                window.Dropdown.getOrCreateInstance(ev.currentTarget).hide();
+            if (dropdown && !dropdown.contains(document.activeElement)) {
+                window.Dropdown.getOrCreateInstance(dropdown).hide();
             }
         }, delay);
     }
