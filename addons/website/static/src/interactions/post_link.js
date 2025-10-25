@@ -7,7 +7,7 @@ export class PostLink extends Interaction {
     static selector = ".post_link";
     dynamicContent = {
         _root: {
-            "t-on-click.prevent": this.onClickPost,
+            "t-on-change": this.onClickPost,
             "t-att-class": () => ({
                 "o_post_link_js_loaded": true,
             }),
